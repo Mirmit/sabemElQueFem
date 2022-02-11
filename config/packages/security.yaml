@@ -36,6 +36,8 @@ security:
                 default_target_path:            /admin/dashboard
                 always_use_default_target_path: true
                 use_referer:                    true
+                username_parameter: "login_form[username]"
+                password_parameter: "login_form[password]"
             logout:
                 path: admin_logout
                 target: admin_login
