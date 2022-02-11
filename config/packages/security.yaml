@@ -1,4 +1,9 @@
 security:
+    role_hierarchy:
+        ROLE_ADMIN: [ ROLE_USER, ROLE_SONATA_ADMIN ]
+        ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
+        SONATA:
+            - ROLE_SONATA_PAGE_ADMIN_PAGE_EDIT
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
@@ -17,9 +22,23 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
-            lazy: true
-            provider: app_user_provider
+#        main:
+#            lazy: true
+#            provider: app_user_provider
+        admin:
+            pattern: /admin(.*)
+            form_login:
+                provider: app_user_provider
+                login_path: admin_login
+                use_forward: false
+                check_path: admin_login
+                failure_path: admin_login
+                default_target_path:            /admin/dashboard
+                always_use_default_target_path: true
+                use_referer:                    true
+            logout:
+                path: admin_logout
+                target: admin_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -32,6 +51,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: [ ROLE_ADMIN, ROLE_SONATA_ADMIN ] }
+        - { path: ^/.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:
     security:
