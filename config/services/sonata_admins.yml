@@ -4,3 +4,7 @@ services:
     tags:
       - { name: sonata.admin, model_class: App\Entity\User, manager_type: orm, label: 'Usuaris', group: 'General' }
     arguments: [ null, App\Entity\User,null, "@security.user_password_hasher" ]
+  admin.project:
+    class: App\Admin\ProjectAdmin
+    tags:
+      - { name: sonata.admin, model_class: App\Entity\Project, manager_type: orm, label: 'Projectes', group: 'General' }
