@@ -1,0 +1,23 @@
+sonata_admin:
+    title: 'Sonata Admin'
+    dashboard:
+        blocks:
+            -   position: left
+                type: sonata.block.service.text
+                settings:
+                    content: >
+                        <h2>Benvingudes i benvinguts tots a posar ordre al caos</h2>
+                        <p>I així poder veure-hi una mica més clar</p>
+            -
+                position: left
+                type: sonata.admin.block.admin_list
+            -   position: left
+                type: sonata.block.service.text
+                settings:
+                    content: >
+                        <a href="logout">Logout</a>
+
+sonata_block:
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts: [admin]
