@@ -3,6 +3,7 @@
 namespace App\Admin;
 
 use App\Entity\Project;
+use App\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -13,19 +14,45 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class TimeRegisterAdmin extends AbstractAdmin
 {
+    private TokenStorageInterface $tokenStorage;
+
+    /**
+     * Methods.
+     */
+    public function __construct($code, $class ,$baseControllerName, TokenStorageInterface $tokenStorage)
+    {
+        parent::__construct($code, $class, $baseControllerName);
+        $this->tokenStorage = $tokenStorage;
+    }
     protected function configureFormFields(FormMapper $form): void
     {
         $form
             ->with('Informació general', ['class' => 'col-md-4'])
             ->add(
+                'user',
+                EntityType::class,
+                [
+                    'class' => User::class,
+                    'data' => $this->tokenStorage->getToken()->getUser()
+                ]
+            )
+            ->add(
                 'project',
                 EntityType::class,
                 ['class' => Project::class]
             )
-            ->add('comments', TextType::class)
+            ->add(
+                'comments',
+                TextType::class,
+                [
+                    'required' => false
+                ]
+            )
             ->add(
                 'invoiceable',
                 CheckboxType::class,
@@ -61,7 +88,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
                     'label' => 'Fi',
                     'input'  => 'datetime',
                     'widget' => 'single_text',
-                    'required' => true,
+                    'required' => false,
                 ]
             )
             ->add(
@@ -93,6 +120,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
     {
         $list
             ->addIdentifier('id')
+            ->add('user')
             ->add('project')
             ->add(
                 'date',

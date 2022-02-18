@@ -53,6 +53,12 @@ class TimeRegister
      */
     private $invoiceable;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="timeRegisters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +144,18 @@ class TimeRegister
     public function setInvoiceable(bool $invoiceable): self
     {
         $this->invoiceable = $invoiceable;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

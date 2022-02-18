@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,6 +42,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(name="plain_password", type="string", nullable=true)
      */
     private $plainPassword;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TimeRegister::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $timeRegisters;
+
+    public function __construct()
+    {
+        $this->timeRegisters = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -155,5 +167,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getUserIdentifier();
+    }
+
+    /**
+     * @return Collection|TimeRegister[]
+     */
+    public function getTimeRegisters(): Collection
+    {
+        return $this->timeRegisters;
+    }
+
+    public function addTimeRegister(TimeRegister $timeRegister): self
+    {
+        if (!$this->timeRegisters->contains($timeRegister)) {
+            $this->timeRegisters[] = $timeRegister;
+            $timeRegister->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTimeRegister(TimeRegister $timeRegister): self
+    {
+        if ($this->timeRegisters->removeElement($timeRegister)) {
+            // set the owning side to null (unless already changed)
+            if ($timeRegister->getUser() === $this) {
+                $timeRegister->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
