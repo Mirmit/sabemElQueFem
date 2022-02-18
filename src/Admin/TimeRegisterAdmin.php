@@ -25,7 +25,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
             ->add('finish', DateTimePickerType::class)
             ->add('totalHours', NumberType::class)
             ->add('comments', TextType::class)
-            ->add('invoicable', CheckboxType::class)
+            ->add('invoiceable', CheckboxType::class)
         ;
     }
 
@@ -38,7 +38,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
             ->add('finish')
             ->add('totalHours')
             ->add('comments')
-            ->add('invoicable')
+            ->add('invoiceable')
         ;
     }
 
@@ -52,7 +52,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
             ->add('finish')
             ->add('totalHours')
             ->add('comments')
-            ->add('invoicable')
+            ->add('invoiceable')
             ->add(
                 '_action',
                 'actions',

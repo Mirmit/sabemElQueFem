@@ -51,7 +51,7 @@ class TimeRegister
     /**
      * @ORM\Column(type="boolean")
      */
-    private $invoicable;
+    private $invoiceable;
 
     public function getId(): ?int
     {
@@ -130,14 +130,14 @@ class TimeRegister
         return $this;
     }
 
-    public function getInvoicable(): ?bool
+    public function getInvoiceable(): ?bool
     {
-        return $this->invoicable;
+        return $this->invoiceable;
     }
 
-    public function setInvoicable(bool $invoicable): self
+    public function setInvoiceable(bool $invoiceable): self
     {
-        $this->invoicable = $invoicable;
+        $this->invoiceable = $invoiceable;
 
         return $this;
     }
