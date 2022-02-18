@@ -8,3 +8,7 @@ services:
     class: App\Admin\ProjectAdmin
     tags:
       - { name: sonata.admin, model_class: App\Entity\Project, manager_type: orm, label: 'Projectes', group: 'General' }
+  admin.time_register:
+    class: App\Admin\TimeRegisterAdmin
+    tags:
+      - { name: sonata.admin, model_class: App\Entity\TimeRegister, manager_type: orm, label: 'Registres de temps', group: 'General' }
