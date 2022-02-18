@@ -7,25 +7,72 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Form\Type\Filter\NumberType;
-use Sonata\Form\Type\DatePickerType;
-use Sonata\Form\Type\DateTimePickerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 final class TimeRegisterAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('project', EntityType::class, ['class' => Project::class])
-            ->add('date', DatePickerType::class)
-            ->add('start', DateTimePickerType::class)
-            ->add('finish', DateTimePickerType::class)
-            ->add('totalHours', NumberType::class)
+            ->with('Informació general', ['class' => 'col-md-4'])
+            ->add(
+                'project',
+                EntityType::class,
+                ['class' => Project::class]
+            )
             ->add('comments', TextType::class)
-            ->add('invoiceable', CheckboxType::class)
+            ->add(
+                'invoiceable',
+                CheckboxType::class,
+                [
+                    'required' => false
+                ]
+            )
+            ->end()
+            ->with('Temps', ['class' => 'col-md-4'])
+            ->add(
+                'date',
+                DateType::class,
+                [
+                    'label' => 'Data',
+                    'widget' => 'single_text',
+                    'required' => true,
+                ]
+            )
+            ->add(
+                'start',
+                TimeType::class,
+                [
+                    'label' => 'Inici',
+                    'input'  => 'datetime',
+                    'widget' => 'single_text',
+                    'required' => true,
+                ]
+            )
+            ->add(
+                'finish',
+                TimeType::class,
+                [
+                    'label' => 'Fi',
+                    'input'  => 'datetime',
+                    'widget' => 'single_text',
+                    'required' => true,
+                ]
+            )
+            ->add(
+                'totalHours',
+                NumberType::class,
+                [
+                    'label' => 'Hores totals',
+                    'required' => true,
+                ]
+            )
+            ->end()
         ;
     }
 
@@ -47,9 +94,27 @@ final class TimeRegisterAdmin extends AbstractAdmin
         $list
             ->addIdentifier('id')
             ->add('project')
-            ->add('date')
-            ->add('start')
-            ->add('finish')
+            ->add(
+                'date',
+                'date',
+                [
+                    'format' => 'd/m/Y'
+                ]
+            )
+            ->add(
+                'start',
+                'time',
+                [
+                    'format' => 'H:i'
+                ]
+            )
+            ->add(
+                'finish',
+                'time',
+                [
+                    'format' => 'H:i'
+                ]
+            )
             ->add('totalHours')
             ->add('comments')
             ->add('invoiceable')
