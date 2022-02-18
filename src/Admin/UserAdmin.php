@@ -42,23 +42,20 @@ class UserAdmin extends AbstractAdmin
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'first_options' => array('label' => 'Contrasenya'),
-                'second_options' => array('label' => 'Confirma contrasenya')
+                'second_options' => array('label' => 'Confirma contrasenya'),
+                'required' => false
             ))
+            ->add(
+                'roles',
+                ChoiceType::class,
+                [
+                    'label' => 'Rols',
+                    'choices' => UserRolesEnum::getEnumArray(),
+                    'multiple' => true,
+                    'expanded' => true,
+                ]
+            )
         ;
-        if ($this->getSubject()->hasRole('ROLE_SUPER_ADMIN')) {
-            $form
-                ->add(
-                    'roles',
-                    ChoiceType::class,
-                    [
-                        'label' => 'Rols',
-                        'choices' => UserRolesEnum::getEnumArray(),
-                        'multiple' => true,
-                        'expanded' => true,
-                    ]
-                )
-            ;
-        }
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagrid): void
