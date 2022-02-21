@@ -12,10 +12,9 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 final class TimeRegisterAdmin extends AbstractAdmin
 {
@@ -48,9 +47,13 @@ final class TimeRegisterAdmin extends AbstractAdmin
             )
             ->add(
                 'comments',
-                TextType::class,
+                TextareaType::class,
                 [
-                    'required' => false
+                    'required' => false,
+                    'attr' => [
+                        'style' => 'resize: vertical',
+                        'rows' => 3,
+                    ]
                 ]
             )
             ->add(
