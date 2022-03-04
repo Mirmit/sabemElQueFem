@@ -13,3 +13,8 @@ services:
     tags:
       - { name: sonata.admin, model_class: App\Entity\TimeRegister, manager_type: orm, label: 'Registres de temps', group: 'General' }
     arguments: [ null, App\Entity\User,null, "@security.token_storage" ]
+  admin.fee:
+    class: App\Admin\FeeAdmin
+    tags:
+      - { name: sonata.admin, model_class: App\Entity\Fee, manager_type: orm, label: 'Quotes', group: 'General' }
+

@@ -159,4 +159,9 @@ class TimeRegister
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getUser()->getUserIdentifier().' - Data: '.$this->getDate()->format('d/m/Y').' - Temps : '.$this->getTotalHours().' hores - Projecte : '.$this->getProject()->getName();
+    }
 }
