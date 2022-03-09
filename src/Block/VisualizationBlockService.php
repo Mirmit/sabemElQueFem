@@ -2,13 +2,23 @@
 
 namespace App\Block;
 
+use App\Repository\TimeRegisterRepository;
 use Sonata\BlockBundle\Block\BlockContextInterface;
 use Sonata\BlockBundle\Block\Service\AbstractBlockService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Environment;
 
 class VisualizationBlockService extends AbstractBlockService
 {
+    private TimeRegisterRepository $timeRegisterRepository;
+
+    public function __construct(Environment $twig, TimeRegisterRepository $timeRegisterRepository)
+    {
+        parent::__construct($twig);
+        $this->timeRegisterRepository = $timeRegisterRepository;
+    }
+
     public function configureSettings(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -24,7 +34,7 @@ class VisualizationBlockService extends AbstractBlockService
         $settings = $blockContext->getSettings();
 
         $backgroundColor = 'bg-green';
-        $content = '<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i></h3><p>Avui tots els operaris estan disponibles</p>';
+        $content = '<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i></h3><p>Aquí hi anirà un gràfic de barres</p>';
 
         return $this->renderResponse(
             $blockContext->getTemplate(),

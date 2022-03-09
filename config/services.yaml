@@ -21,7 +21,7 @@ services:
             - '../src/Kernel.php'
     app.block.visualization:
         class: App\Block\VisualizationBlockService
-        arguments: [ '@twig']
+        arguments: [ '@twig','@app.time_register_repository']
         tags:
             - { name: sonata.block }
     # add more service definitions when explicit configuration is needed

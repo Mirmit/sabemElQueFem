@@ -4,3 +4,9 @@
 #    factory: [ '@doctrine', getRepository ]
 #    arguments:
 #      - App:Web\Service
+services:
+  app.time_register_repository:
+    class: App\Repository\TimeRegisterRepository
+    factory: [ '@doctrine', getRepository ]
+    arguments:
+      - App:TimeRegister
