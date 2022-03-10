@@ -19,22 +19,24 @@ class TimeRegisterRepository extends ServiceEntityRepository
         parent::__construct($registry, TimeRegister::class);
     }
 
-    // /**
-    //  * @return TimeRegister[] Returns an array of TimeRegister objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+      * @return TimeRegister[] Returns an array of TimeRegister objects
+      */
+
+    public function getTotalHoursGroupedByInvoiceableAndDate(): array
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+            ->select('DATE(t.date) as date, t.invoiceable, SUM(t.totalHours) as totalHours')
+//            ->andWhere('t.exampleField = :val')
+//            ->setParameter('val', $value)
+            ->groupBy('t.date')
+            ->addGroupBy('t.invoiceable')
+            ->orderBy('t.date', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?TimeRegister
