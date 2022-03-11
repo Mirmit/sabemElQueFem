@@ -13,8 +13,26 @@
     <script type="module">
       import * as d3 from "https://cdn.skypack.dev/d3@7";
 
-      const data = '{{ data|json_encode|raw }}';
-      console.log('data', data);
+      let dailyHours = JSON.parse('{{ data|json_encode|raw }}');
+      dailyHours = dailyHours.map(d => (
+        {
+          date: new Date(d.date),
+          invoiceable: d.invoiceable,
+          totalHours: +d.totalHours
+        }
+      ))
+      console.log('data', dailyHours);
+      let chart = StackedBarChart(dailyHours, {
+        x: d => d.date,
+        y: d => d.totalHours,
+        z: d => d.invoiceable,
+        xDomain: [0, d3.extent(dailyHours.map(d => d.date))],
+        yLabel: "↑ Population (millions)",
+        zDomain: [ true, false],
+        colors: d3.schemeSpectral[2],
+        width: 500,
+        height: 500
+      });
       // Copyright 2021 Observable, Inc.
       // Released under the ISC license.
       // https://observablehq.com/@d3/stacked-bar-chart
