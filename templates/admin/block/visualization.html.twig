@@ -4,6 +4,11 @@
     {#<!-- small box -->#}
     <div>
       <div id="stackedBarDiv">
+        <h3>Hores diàries treballades</h3>
+        <ul>
+          <li style="color: #c87f0a">No facturable</li>
+          <li style="color: #1b6d85">Facturable</li>
+        </ul>
       </div>
     </div>
     <script type="module">
@@ -24,11 +29,11 @@
         y: d => d.totalHours,
         z: d => d.invoiceable,
         xDomain: dailyHours.map(d => d.date),
-        yLabel: "Total hours",
+        yLabel: "Hores",
         zDomain: [ true, false],
         colors: d3.schemeSpectral[2],
         width: 500,
-        height: 500
+        height: 250
       })
       newDivToAppend.append(chart);
       // Copyright 2021 Observable, Inc.
