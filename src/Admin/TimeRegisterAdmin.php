@@ -155,7 +155,13 @@ final class TimeRegisterAdmin extends AbstractAdmin
                 ]
             )
             ->add('totalHours')
-            ->add('comments')
+            ->add(
+                'comments',
+                null,
+                [
+                    'editable' => true,
+                ]
+            )
             ->add('invoiceable')
             ->add(
                 '_action',
