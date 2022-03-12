@@ -11,6 +11,10 @@ sonata_admin:
             -
                 position: left
                 type: sonata.admin.block.admin_list
+            -
+                position: left
+                type: app.block.visualization
+                class: 'col-md-4'
             -   position: left
                 type: sonata.block.service.text
                 settings:
