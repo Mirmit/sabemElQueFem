@@ -1,13 +1,12 @@
 {% extends sonata_block.templates.block_base %}
 
 {% block block %}
-    {#<!-- small box -->#}
     <div>
       <div id="stackedBarDiv">
         <h3>Hores diàries treballades</h3>
         <ul>
-          <li style="color: #c87f0a">No facturable</li>
-          <li style="color: #1b6d85">Facturable</li>
+          <li style="color: #f28e2c">No facturable</li>
+          <li style="color: #e15759">Facturable</li>
         </ul>
       </div>
     </div>
@@ -22,6 +21,7 @@
           totalHours: +d.totalHours
         }
       ))
+      console.log('dailyHours', dailyHours)
       const newDivToAppend = jQuery('#stackedBarDiv')
       console.log('data', dailyHours)
       let chart = StackedBarChart(dailyHours, {
@@ -31,7 +31,7 @@
         xDomain: dailyHours.map(d => d.date),
         yLabel: "Hores",
         zDomain: [ true, false],
-        colors: d3.schemeSpectral[2],
+        // colors: [ 'green', 'yellow'],
         width: 500,
         height: 250
       })
