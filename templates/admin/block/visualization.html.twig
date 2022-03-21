@@ -2,13 +2,14 @@
 
 {% block block %}
     {#<!-- small box -->#}
-    <div class="small-box {{ background }}">
-        <div class="inner">
-            {{ content | raw }}
-        </div>
-        <div class="icon">
-            <i class="fa fa-user-times"></i>
-        </div>
+    <div>
+      <div id="stackedBarDiv">
+        <h3>Hores diàries treballades</h3>
+        <ul>
+          <li style="color: #c87f0a">No facturable</li>
+          <li style="color: #1b6d85">Facturable</li>
+        </ul>
+      </div>
     </div>
     <script type="module">
       import * as d3 from "https://cdn.skypack.dev/d3@7";
@@ -16,23 +17,25 @@
       let dailyHours = JSON.parse('{{ data|json_encode|raw }}');
       dailyHours = dailyHours.map(d => (
         {
-          date: new Date(d.date),
+          date: d.date,
           invoiceable: d.invoiceable,
           totalHours: +d.totalHours
         }
       ))
-      console.log('data', dailyHours);
+      const newDivToAppend = jQuery('#stackedBarDiv')
+      console.log('data', dailyHours)
       let chart = StackedBarChart(dailyHours, {
         x: d => d.date,
         y: d => d.totalHours,
         z: d => d.invoiceable,
-        xDomain: [0, d3.extent(dailyHours.map(d => d.date))],
-        yLabel: "↑ Population (millions)",
+        xDomain: dailyHours.map(d => d.date),
+        yLabel: "Hores",
         zDomain: [ true, false],
         colors: d3.schemeSpectral[2],
         width: 500,
-        height: 500
-      });
+        height: 250
+      })
+      newDivToAppend.append(chart);
       // Copyright 2021 Observable, Inc.
       // Released under the ISC license.
       // https://observablehq.com/@d3/stacked-bar-chart
