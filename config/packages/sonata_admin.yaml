@@ -20,6 +20,8 @@ sonata_admin:
                 settings:
                     content: >
                         <a href="logout">Logout</a>
+    templates:
+        layout: 'layout.html.twig'
 
 sonata_block:
     blocks:
