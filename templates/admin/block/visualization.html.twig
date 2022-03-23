@@ -1,7 +1,7 @@
 {% extends sonata_block.templates.block_base %}
 
 {% block block %}
-    <div>
+    <div id="invoceableWeeklyHours">
       <h3>Hores facturables setmanals</h3>
       <svg style="height: 400px; width: 600px"/>
     </div>
@@ -25,7 +25,7 @@
                 totalHours: +d.totalHours
               }
       ))
-      console.log('weeklyInvoicedHours', weeklyInvoicedHours)
+      console.log(d3.select("#invoceableWeeklyHours").attr('width'))
       const margin = 60;
       const width = 600 - 2 * margin;
       const height = 400 - 2 * margin;
@@ -39,7 +39,7 @@
         .range([height, 0])
         .domain([0, 30]);
       weeklyBarChart.append('g')
-        .call(d3.axisLeft(yScale));
+        .call(d3.axisLeft(yScale).ticks(6));
 
       // Drawing x axis
       const xScale = d3.scaleBand()
@@ -105,10 +105,13 @@
       // Drawing horizontal lines
       weeklyBarChart.append('g')
         .attr('class', 'grid')
+        .attr('id', 'horizontalLines')
         .call(d3.axisLeft()
-        .scale(yScale)
-        .tickSize(-width, 0, 0)
-        .tickFormat(''))
+          .ticks(6)
+          .scale(yScale)
+          .tickSize(-width, 0, 0)
+          .tickFormat('')
+        )
 
       // Draw labels
       svg.append('text')
@@ -274,6 +277,16 @@
 
     rect#weeklyBars {
       fill: #FFA233;
+    }
+
+    g#horizontalLines g line {
+      stroke: grey;
+      opacity: 0.5;
+      z-index: -5;
+    }
+
+    svg {
+      font-family: 'Open Sans', sans-serif;
     }
   </style>
 {% endblock %}
