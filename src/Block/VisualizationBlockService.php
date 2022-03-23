@@ -33,7 +33,7 @@ class VisualizationBlockService extends AbstractBlockService
         // merge settings
         $settings = $blockContext->getSettings();
         $data = $this->timeRegisterRepository->getTotalHoursGroupedByInvoiceableAndDate();
-
+        $weeklyData = array_reverse($this->timeRegisterRepository->getTotalHoursInvoiceableGroupedByWeek());
         $backgroundColor = 'bg-green';
         $content = '<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i></h3><p>Aquí hi anirà un gràfic de barres</p>';
 
@@ -45,7 +45,8 @@ class VisualizationBlockService extends AbstractBlockService
                 'title' => 'Notificacions',
                 'background' => $backgroundColor,
                 'content' => $content,
-                'data' => $data
+                'data' => $data,
+                'weeklyData' => $weeklyData
             ),
             $response
         );

@@ -1,19 +1,132 @@
 {% extends sonata_block.templates.block_base %}
 
 {% block block %}
-    {#<!-- small box -->#}
+    <div>
+      <h3>Hores facturables setmanals</h3>
+      <svg style="height: 400px; width: 600px"/>
+    </div>
     <div>
       <div id="stackedBarDiv">
         <h3>Hores diàries treballades</h3>
         <ul>
-          <li style="color: #c87f0a">No facturable</li>
-          <li style="color: #1b6d85">Facturable</li>
+          <li style="color: #f28e2c">No facturable</li>
+          <li style="color: #e15759">Facturable</li>
         </ul>
       </div>
     </div>
     <script type="module">
       import * as d3 from "https://cdn.skypack.dev/d3@7";
 
+      // New barchart, weekly invoiced total hours
+      let weeklyInvoicedHours = JSON.parse('{{ weeklyData|json_encode|raw }}');
+      weeklyInvoicedHours = weeklyInvoicedHours.map(d => (
+              {
+                firstDayOfWeek: d.firstDayOfWeek,
+                totalHours: +d.totalHours
+              }
+      ))
+      console.log('weeklyInvoicedHours', weeklyInvoicedHours)
+      const margin = 60;
+      const width = 600 - 2 * margin;
+      const height = 400 - 2 * margin;
+
+      const svg = d3.select('svg');
+      const weeklyBarChart = svg.append('g')
+        .attr('transform', `translate(${margin}, ${margin})`);
+
+      // Drawing y Axis
+      const yScale = d3.scaleLinear()
+        .range([height, 0])
+        .domain([0, 30]);
+      weeklyBarChart.append('g')
+        .call(d3.axisLeft(yScale));
+
+      // Drawing x axis
+      const xScale = d3.scaleBand()
+        .range([0, width])
+        .domain(weeklyInvoicedHours.map((d) => d.firstDayOfWeek))
+        .padding(0.2)
+      weeklyBarChart.append('g')
+        .attr('transform', `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale));
+
+      // Drawing the bars
+      weeklyBarChart.selectAll()
+        .data(weeklyInvoicedHours)
+        .enter()
+        .append('rect')
+        .attr('id', 'weeklyBars')
+        .attr('x', (d) => xScale(d.firstDayOfWeek))
+        .attr('y', (d) => yScale(d.totalHours))
+        .attr('height', (d) => height - yScale(d.totalHours))
+        .attr('width', xScale.bandwidth())
+      // Highlight each bar on mouse enter and draw horizontal line
+        .on('mouseenter', function (actual, i) {
+          d3.selectAll('.value')
+            .attr('opacity', 0)
+
+          d3.select(this)
+            .transition()
+            .duration(300)
+            .attr('opacity', 0.6)
+            .attr('x', (d) => xScale(d.firstDayOfWeek) - 5)
+            .attr('width', xScale.bandwidth() + 10)
+
+          const y = yScale(i.totalHours);
+          weeklyBarChart.append('line')
+            .attr('id', 'limit')
+            .attr('x1', 0)
+            .attr('y1', y)
+            .attr('x2', width)
+            .attr('y2', y)
+            .attr('stroke', 'red')
+          weeklyBarChart.append('text')
+            .attr('id', 'labelTotalHours')
+            .attr('x', xScale(i.firstDayOfWeek) + margin / 2)
+            .attr('y', yScale(i.totalHours) - 5)
+            .attr('text-anchor', 'middle')
+            .text(i.totalHours)
+        })
+      .on('mouseleave', function () {
+        d3.selectAll('.value')
+        .attr('opacity', 1)
+
+        d3.select(this)
+        .transition()
+        .duration(300)
+        .attr('opacity', 1)
+        .attr('x', (d) => xScale(d.firstDayOfWeek))
+        .attr('width', xScale.bandwidth())
+
+        weeklyBarChart.selectAll('#limit').remove()
+        weeklyBarChart.selectAll('#labelTotalHours').remove()
+      })
+
+      // Drawing horizontal lines
+      weeklyBarChart.append('g')
+        .attr('class', 'grid')
+        .call(d3.axisLeft()
+        .scale(yScale)
+        .tickSize(-width, 0, 0)
+        .tickFormat(''))
+
+      // Draw labels
+      svg.append('text')
+        .attr('x', -(height / 2) - margin)
+        .attr('y', margin / 2.4)
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .text('Hores facturables')
+
+      svg.append('text')
+        .attr('x', width / 2 + margin)
+        .attr('y', height + 1.7 * margin)
+        .attr('text-anchor', 'middle')
+        .text('Setmana')
+
+
+
+      // Working stacked barchart
       let dailyHours = JSON.parse('{{ data|json_encode|raw }}');
       dailyHours = dailyHours.map(d => (
         {
@@ -23,19 +136,18 @@
         }
       ))
       const newDivToAppend = jQuery('#stackedBarDiv')
-      console.log('data', dailyHours)
-      let chart = StackedBarChart(dailyHours, {
+      let stackedBarChart = StackedBarChart(dailyHours, {
         x: d => d.date,
         y: d => d.totalHours,
         z: d => d.invoiceable,
         xDomain: dailyHours.map(d => d.date),
         yLabel: "Hores",
         zDomain: [ true, false],
-        colors: d3.schemeSpectral[2],
+        // colors: [ 'green', 'yellow'],
         width: 500,
         height: 250
       })
-      newDivToAppend.append(chart);
+      newDivToAppend.append(stackedBarChart);
       // Copyright 2021 Observable, Inc.
       // Released under the ISC license.
       // https://observablehq.com/@d3/stacked-bar-chart
@@ -152,6 +264,16 @@
 
         return Object.assign(svg.node(), {scales: {color}});
       }
-        console.log(d3);
     </script>
+  <style>
+    line#limit {
+      stroke: #FED966;
+      stroke-width: 3;
+      stroke-dasharray: 3 6;
+    }
+
+    rect#weeklyBars {
+      fill: #FFA233;
+    }
+  </style>
 {% endblock %}
