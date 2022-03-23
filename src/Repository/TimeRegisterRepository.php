@@ -19,10 +19,9 @@ class TimeRegisterRepository extends ServiceEntityRepository
         parent::__construct($registry, TimeRegister::class);
     }
 
-     /**
-      * @return TimeRegister[] Returns an array of TimeRegister objects
-      */
-
+    /**
+    * @return TimeRegister[] Returns an array of TimeRegister objects
+    */
     public function getTotalHoursGroupedByInvoiceableAndDate(): array
     {
         return $this->createQueryBuilder('t')
@@ -33,6 +32,22 @@ class TimeRegisterRepository extends ServiceEntityRepository
             ->addGroupBy('t.invoiceable')
             ->orderBy('t.date', 'ASC')
             ->getQuery()
+            ->getResult()
+        ;
+    }
+    /**
+    * @return TimeRegister[] Returns an array of TimeRegister objects
+    */
+    public function getTotalHoursInvoiceableGroupedByWeek(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('YEARWEEK(t.date) as yearWeek, MIN(t.date) as firstDayOfWeek, SUM(t.totalHours) as totalHours')
+            ->andWhere('t.invoiceable = :invoiceable')
+            ->setParameter('invoiceable', true)
+            ->groupBy('yearWeek')
+            ->orderBy('yearWeek', 'DESC')
+            ->getQuery()
+            ->setMaxResults(8)
             ->getResult()
         ;
     }

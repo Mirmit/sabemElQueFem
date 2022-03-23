@@ -2,6 +2,9 @@
 
 {% block block %}
     <div>
+      <svg />
+    </div>
+    <div>
       <div id="stackedBarDiv">
         <h3>Hores diàries treballades</h3>
         <ul>
@@ -12,6 +15,14 @@
     </div>
     <script type="module">
       import * as d3 from "https://cdn.skypack.dev/d3@7";
+
+      const margin = 60;
+      const width = 1000 - 2 * margin;
+      const height = 600 - 2 * margin;
+
+      const svg = d3.select('svg');
+      const chart = svg.append('g')
+      .attr('transform', `translate(${margin}, ${margin})`);
 
       let dailyHours = JSON.parse('{{ data|json_encode|raw }}');
       dailyHours = dailyHours.map(d => (
@@ -24,7 +35,7 @@
       console.log('dailyHours', dailyHours)
       const newDivToAppend = jQuery('#stackedBarDiv')
       console.log('data', dailyHours)
-      let chart = StackedBarChart(dailyHours, {
+      let stackedBarChart = StackedBarChart(dailyHours, {
         x: d => d.date,
         y: d => d.totalHours,
         z: d => d.invoiceable,
@@ -35,7 +46,7 @@
         width: 500,
         height: 250
       })
-      newDivToAppend.append(chart);
+      newDivToAppend.append(stackedBarChart);
       // Copyright 2021 Observable, Inc.
       // Released under the ISC license.
       // https://observablehq.com/@d3/stacked-bar-chart

@@ -18,6 +18,7 @@ doctrine:
         dql:
             datetime_functions:
                 date: DoctrineExtensions\Query\Mysql\Date
+                yearweek: DoctrineExtensions\Query\Mysql\YearWeek
 when@test:
     doctrine:
         dbal:
