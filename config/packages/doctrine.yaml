@@ -19,6 +19,7 @@ doctrine:
             datetime_functions:
                 date: DoctrineExtensions\Query\Mysql\Date
                 yearweek: DoctrineExtensions\Query\Mysql\YearWeek
+                month: DoctrineExtensions\Query\Mysql\Month
 when@test:
     doctrine:
         dbal:

@@ -2,7 +2,9 @@
 
 namespace App\Block;
 
+use App\Enum\UserRolesEnum;
 use App\Repository\TimeRegisterRepository;
+use App\Repository\UserRepository;
 use Sonata\BlockBundle\Block\BlockContextInterface;
 use Sonata\BlockBundle\Block\Service\AbstractBlockService;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,11 +14,13 @@ use Twig\Environment;
 class VisualizationBlockService extends AbstractBlockService
 {
     private TimeRegisterRepository $timeRegisterRepository;
+    private UserRepository $userRepository;
 
-    public function __construct(Environment $twig, TimeRegisterRepository $timeRegisterRepository)
+    public function __construct(Environment $twig, TimeRegisterRepository $timeRegisterRepository, UserRepository $userRepository)
     {
         parent::__construct($twig);
         $this->timeRegisterRepository = $timeRegisterRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function configureSettings(OptionsResolver $resolver): void
@@ -34,6 +38,10 @@ class VisualizationBlockService extends AbstractBlockService
         $settings = $blockContext->getSettings();
         $data = $this->timeRegisterRepository->getTotalHoursGroupedByInvoiceableAndDate();
         $weeklyData = array_reverse($this->timeRegisterRepository->getTotalHoursInvoiceableGroupedByWeek());
+        $user1 = $this->userRepository->find(4);
+        $user2 = $this->userRepository->find(5);
+        $monthlyInvoiceableHours1 = $this->timeRegisterRepository->getTotalHoursInvoiceableGroupedByMonthAndUser($user1);
+        $monthlyInvoiceableHours2 = $this->timeRegisterRepository->getTotalHoursInvoiceableGroupedByMonthAndUser($user2);
         $backgroundColor = 'bg-green';
         $content = '<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i></h3><p>Aquí hi anirà un gràfic de barres</p>';
 
@@ -46,7 +54,9 @@ class VisualizationBlockService extends AbstractBlockService
                 'background' => $backgroundColor,
                 'content' => $content,
                 'data' => $data,
-                'weeklyData' => $weeklyData
+                'weeklyData' => $weeklyData,
+                'monthlyUser1' => $monthlyInvoiceableHours1,
+                'monthlyUser2' => $monthlyInvoiceableHours2,
             ),
             $response
         );
