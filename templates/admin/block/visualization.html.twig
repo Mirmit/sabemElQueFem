@@ -8,7 +8,7 @@
     <div id="totalMonthlyHours">
       <h3>Hores fact. mensuals</h3>
       <button id="monthlyUser1">Usuari 4</button>
-      <button id="monthlyUser1">Usuari 5</button>
+      <button id="monthlyUser2">Usuari 5</button>
     </div>
     <div>
       <div id="stackedBarDiv">
@@ -44,7 +44,7 @@
               height = 400 - margin.top - margin.bottom;
 
       // append the svg object to the body of the page
-      let svg = d3.select("#totalMonthlyHours")
+      let svgMonthlyHours = d3.select("#totalMonthlyHours")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -55,35 +55,34 @@
       // Initialise a X axis:
       let x = d3.scaleLinear().range([0,width]);
       let xAxis = d3.axisBottom().scale(x);
-      svg.append("g")
+      svgMonthlyHours.append("g")
         .attr("transform", "translate(0," + height + ")")
         .attr("class","myXaxis")
 
       // Initialize an Y axis
       let y = d3.scaleLinear().range([height, 0]);
       let yAxis = d3.axisLeft().scale(y);
-      svg.append("g")
+      svgMonthlyHours.append("g")
         .attr("class","myYaxis")
 
       // Create a function that takes a dataset as input and update the plot:
-      function update(monthlyUser1) {
-
+      function update(monthlyUserData) {
         // Create the X axis:
-        x.domain([d3.min(monthlyUser1, function(d) { return d.month }), d3.max(monthlyUser1, function(d) { return d.month }) ]);
-        svg.selectAll(".myXaxis").transition()
+        x.domain([d3.min(monthlyUserData, function(d) { return d.month }), d3.max(monthlyUserData, function(d) { return d.month }) ]);
+        svgMonthlyHours.selectAll(".myXaxis").transition()
           .duration(3000)
           .call(xAxis);
 
         // create the Y axis
-        y.domain([0, d3.max(monthlyUser1, function(d) { return d.totalHours  }) ]);
-        svg.selectAll(".myYaxis")
+        y.domain([0, d3.max(monthlyUserData, function(d) { return d.totalHours  }) ]);
+        svgMonthlyHours.selectAll(".myYaxis")
           .transition()
           .duration(3000)
           .call(yAxis);
 
         // Create a update selection: bind to the new data
-        let u = svg.selectAll(".lineTest")
-          .data([monthlyUser1], function(d){ return d.month });
+        let u = svgMonthlyHours.selectAll(".lineTest")
+          .data([monthlyUserData], function(d){ return d.month });
 
         // Updata the line
         u
@@ -99,10 +98,14 @@
           .attr("fill", "none")
           .attr("stroke", "steelblue")
           .attr("stroke-width", 2.5)
+        console.log('Something');
       }
 
       // At the beginning, I run the update function on the first dataset:
       update(monthlyUser1)
+
+      d3.select("#monthlyUser2").on("click", () => update(monthlyUser2))
+      d3.select("#monthlyUser1").on("click", () => update(monthlyUser1))
 
       // New barchart, weekly invoiced total hours
       let weeklyInvoicedHours = JSON.parse('{{ weeklyData|json_encode|raw }}');
@@ -116,7 +119,7 @@
       width = 400 - 2 * margin;
       height = 400 - 2 * margin;
 
-      svg = d3.select('svg');
+      let svg = d3.select('svg');
       const weeklyBarChart = svg.append('g')
         .attr('transform', `translate(${margin}, ${margin})`);
 
