@@ -2,8 +2,13 @@
 
 {% block block %}
     <div id="invoceableWeeklyHours">
-      <h3>Hores facturables setmanals</h3>
+      <h3>Hores fact. setmanals</h3>
       <svg style="height: 400px; width: 600px"/>
+    </div>
+    <div id="totalMonthlyHours">
+      <h3>Hores fact. mensuals</h3>
+      <button id="monthlyUser1">Usuari 4</button>
+      <button id="monthlyUser2">Usuari 5</button>
     </div>
     <div>
       <div id="stackedBarDiv">
@@ -17,6 +22,91 @@
     <script type="module">
       import * as d3 from "https://cdn.skypack.dev/d3@7";
 
+      // Updatable linechart
+      let monthlyUser1 = JSON.parse('{{ monthlyUser1|json_encode|raw }}');
+      monthlyUser1 = monthlyUser1.map(d => (
+              {
+                month: d.month,
+                totalHours: +d.totalHours
+              }
+      ))
+      let monthlyUser2 = JSON.parse('{{ monthlyUser2|json_encode|raw }}');
+      monthlyUser2 = monthlyUser2.map(d => (
+              {
+                month: d.month,
+                totalHours: +d.totalHours
+              }
+      ))
+
+      // set the dimensions and margins of the graph
+      let margin = {top: 10, right: 30, bottom: 30, left: 50},
+              width = 460 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+      // append the svg object to the body of the page
+      let svgMonthlyHours = d3.select("#totalMonthlyHours")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+      // Initialise a X axis:
+      let x = d3.scaleLinear().range([0,width]);
+      let xAxis = d3.axisBottom().scale(x);
+      svgMonthlyHours.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .attr("class","myXaxis")
+
+      // Initialize an Y axis
+      let y = d3.scaleLinear().range([height, 0]);
+      let yAxis = d3.axisLeft().scale(y);
+      svgMonthlyHours.append("g")
+        .attr("class","myYaxis")
+
+      // Create a function that takes a dataset as input and update the plot:
+      function update(monthlyUserData) {
+        // Create the X axis:
+        x.domain([d3.min(monthlyUserData, function(d) { return d.month }), d3.max(monthlyUserData, function(d) { return d.month }) ]);
+        svgMonthlyHours.selectAll(".myXaxis").transition()
+          .duration(3000)
+          .call(xAxis);
+
+        // create the Y axis
+        y.domain([0, d3.max(monthlyUserData, function(d) { return d.totalHours  }) ]);
+        svgMonthlyHours.selectAll(".myYaxis")
+          .transition()
+          .duration(3000)
+          .call(yAxis);
+
+        // Create a update selection: bind to the new data
+        let u = svgMonthlyHours.selectAll(".lineTest")
+          .data([monthlyUserData], function(d){ return d.month });
+
+        // Updata the line
+        u
+          .enter()
+          .append("path")
+          .attr("class","lineTest")
+          .merge(u)
+          .transition()
+          .duration(3000)
+          .attr("d", d3.line()
+          .x(function(d) { return x(d.month); })
+          .y(function(d) { return y(d.totalHours); }))
+          .attr("fill", "none")
+          .attr("stroke", "steelblue")
+          .attr("stroke-width", 2.5)
+        console.log('Something');
+      }
+
+      // At the beginning, I run the update function on the first dataset:
+      update(monthlyUser1)
+
+      d3.select("#monthlyUser2").on("click", () => update(monthlyUser2))
+      d3.select("#monthlyUser1").on("click", () => update(monthlyUser1))
+
       // New barchart, weekly invoiced total hours
       let weeklyInvoicedHours = JSON.parse('{{ weeklyData|json_encode|raw }}');
       weeklyInvoicedHours = weeklyInvoicedHours.map(d => (
@@ -25,12 +115,11 @@
                 totalHours: +d.totalHours
               }
       ))
-      console.log(d3.select("#invoceableWeeklyHours").attr('width'))
-      const margin = 60;
-      const width = 400 - 2 * margin;
-      const height = 400 - 2 * margin;
+      margin = 60;
+      width = 400 - 2 * margin;
+      height = 400 - 2 * margin;
 
-      const svg = d3.select('svg');
+      let svg = d3.select('svg');
       const weeklyBarChart = svg.append('g')
         .attr('transform', `translate(${margin}, ${margin})`);
 

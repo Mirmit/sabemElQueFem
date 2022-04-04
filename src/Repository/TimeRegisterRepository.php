@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TimeRegister;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,19 +36,38 @@ class TimeRegisterRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
     /**
     * @return TimeRegister[] Returns an array of TimeRegister objects
     */
     public function getTotalHoursInvoiceableGroupedByWeek(): array
     {
         return $this->createQueryBuilder('t')
-            ->select('YEARWEEK(t.date) as yearWeek, MIN(t.date) as firstDayOfWeek, SUM(t.totalHours) as totalHours')
+            ->select('YEARWEEK(t.date, 1) as yearWeek, MIN(t.date) as firstDayOfWeek, SUM(t.totalHours) as totalHours')
             ->andWhere('t.invoiceable = :invoiceable')
             ->setParameter('invoiceable', true)
             ->groupBy('yearWeek')
             ->orderBy('yearWeek', 'DESC')
             ->getQuery()
             ->setMaxResults(8)
+            ->getResult()
+        ;
+    }
+
+    /**
+    * @return TimeRegister[] Returns an array of TimeRegister objects
+    */
+    public function getTotalHoursInvoiceableGroupedByMonthAndUser(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('MONTH(t.date) as month, SUM(t.totalHours) as totalHours')
+            ->andWhere('t.invoiceable = :invoiceable')
+            ->andWhere('t.user = :user')
+            ->setParameter('invoiceable', true)
+            ->setParameter('user', $user)
+            ->groupBy('month')
+            ->orderBy('month', 'ASC')
+            ->getQuery()
             ->getResult()
         ;
     }

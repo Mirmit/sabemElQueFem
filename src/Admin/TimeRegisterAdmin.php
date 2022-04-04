@@ -30,6 +30,18 @@ final class TimeRegisterAdmin extends AbstractAdmin
         $this->tokenStorage = $tokenStorage;
     }
 
+
+    public function configureExportFields(): array
+    {
+        return [
+            'id',
+            'project.name',
+            'dateFormatted',
+            'comments',
+            'totalHoursFormatted'
+        ];
+    }
+
     protected function configureDefaultSortValues(array &$sortValues): void
     {
         $sortValues[DatagridInterface::SORT_ORDER] = 'DESC';
