@@ -160,6 +160,16 @@ class TimeRegister
         return $this;
     }
 
+    public function dateFormatted(): string
+    {
+        return $this->getDate()->format('d/m/Y');
+    }
+
+    public function totalHoursFormatted(): string
+    {
+        return number_format($this->getTotalHours(), 2, ',', '');
+    }
+
     public function __toString()
     {
         return $this->getUser()->getUserIdentifier().' - Data: '.$this->getDate()->format('d/m/Y').' - Temps : '.$this->getTotalHours().' hores - Projecte : '.$this->getProject()->getName();
