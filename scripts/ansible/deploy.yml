@@ -1,0 +1,70 @@
+---
+- name: Deploy project to production server
+  hosts: mirmit
+  gather_facts: false
+  roles:
+    - { role: "cbrunnkvist.ansistrano-symfony-deploy" }
+  vars_files:
+    - "{{ playbook_dir }}/vars/config.yml"
+  vars:
+    ansistrano_deploy_from: "{{ playbook_dir }}/../../" # Where my local project is (relative or absolute path)
+    ansistrano_deploy_to: "{{ vhost_path }}" # Base path to deploy to.
+    ansistrano_version_dir: "releases" # Releases folder name
+    ansistrano_current_dir: "current" # Softlink name. You should rarely changed it.
+    ansistrano_current_via: "symlink" # Deployment strategy who code should be deployed to current path. Options are symlink or rsync
+    ansistrano_keep_releases: 5 # Releases to keep after a new deployment. See "Pruning old releases".
+
+    # Arrays of directories and files to be shared.
+    # The following arrays of directories and files will be symlinked to the current release directory after the 'update-code' step and its callbacks
+    # Notes:
+    # * Paths are relative to the /shared directory (no starting /)
+    # * If your items are in a subdirectory, write the entire path to each shared directory
+    #
+    # Example:
+    # ansistrano_shared_paths:
+    #   - path/to/first-dir
+    #   - path/next-dir
+    # ansistrano_shared_files:
+    #   - my-file.txt
+    #   - path/to/file.txt
+    ansistrano_shared_paths:
+      - "var/log"
+    ansistrano_shared_files: []
+
+
+    # Shared paths and basedir shared files creation.
+    # By default the shared paths directories and base directories for shared files are created automatically if not exists. But in some scenarios those paths could be symlinks to another directories in the filesystem, and the deployment process would fails. With these variables you can disable the involved tasks. If you have two or three shared paths, and don't need creation only for some of them, you always could disable the automatic creation and add a custom task in a hook.
+    ansistrano_ensure_shared_paths_exist: yes
+    ansistrano_ensure_basedirs_shared_files_exist: yes
+
+    # Deployment strategy - method used to deliver code. Options are copy, download, git, rsync, rsync_direct, svn, or s3.
+    ansistrano_deploy_via: git
+
+    # Variables used in the Git deployment strategy
+    ansistrano_git_repo: git@github.com:Mirmit/sabemElQueFem.git # Location of the git repository
+    ansistrano_git_branch: main # What version of the repository to check out. This can be the full 40-character SHA-1 hash, the literal string HEAD, a branch name, or a tag name
+
+    # Hooks: custom tasks if you need them
+#    ansistrano_before_setup_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-before-setup-tasks.yml"
+#    ansistrano_after_setup_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-after-setup-tasks.yml"
+#    ansistrano_before_update_code_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-before-update-code-tasks.yml"
+#    ansistrano_after_update_code_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-after-update-code-tasks.yml"
+#    ansistrano_before_symlink_shared_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-before-symlink-shared-tasks.yml"
+#    ansistrano_after_symlink_shared_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-after-symlink-shared-tasks.yml"
+#    ansistrano_before_symlink_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-before-symlink-tasks.yml"
+#    ansistrano_after_symlink_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-after-symlink-tasks.yml"
+#    ansistrano_before_cleanup_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-before-cleanup-tasks.yml"
+#    ansistrano_after_cleanup_tasks_file: "{{ playbook_dir }}/<your-deployment-config>/my-after-cleanup-tasks.yml"
+
+    # symfony config
+    symfony_console_path: "bin/console"
+    symfony_php_path: "/usr/bin/php{{ vhost_php_version }}"
+    symfony_run_composer: true
+    symfony_composer_path: "{{ ansistrano_deploy_to }}/composer.phar"
+    symfony_composer_options: "--no-dev --optimize-autoloader --no-interaction --no-plugins --no-scripts"
+    symfony_composer_version: "2.0.12"
+    symfony_composer_self_update: false
+    symfony_run_assets_install: true
+    symfony_run_assetic_dump: false
+    symfony_run_cache_clear_and_warmup: true
+    symfony_run_doctrine_migrations: true
