@@ -1,0 +1,4 @@
+vhost_name: "sabemElQueFemAns"
+vhost_base_dir: "/var/www"
+vhost_path: "{{ vhost_base_dir }}/{{ vhost_name }}"
+vhost_php_version: "7.4"
