@@ -4,6 +4,7 @@ namespace App\Admin;
 
 use App\Entity\Project;
 use App\Entity\User;
+use DateTime;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridInterface;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -92,6 +93,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
                     'label' => 'Data',
                     'widget' => 'single_text',
                     'required' => true,
+                    'data' => new DateTime()
                 ]
             )
             ->add(
