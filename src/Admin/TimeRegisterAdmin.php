@@ -114,6 +114,7 @@ final class TimeRegisterAdmin extends AbstractAdmin
                     'input'  => 'datetime',
                     'widget' => 'single_text',
                     'required' => false,
+                    'data' => new DateTime()
                 ]
             )
             ->add(
