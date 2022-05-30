@@ -86,27 +86,55 @@ final class TimeRegisterAdmin extends AbstractAdmin
             )
             ->end()
             ->with('Temps', ['class' => 'col-md-4'])
-            ->add(
-                'date',
-                DateType::class,
-                [
-                    'label' => 'Data',
-                    'widget' => 'single_text',
-                    'required' => true,
-                    'data' => new DateTime()
-                ]
-            )
-            ->add(
-                'start',
-                TimeType::class,
-                [
-                    'label' => 'Inici',
-                    'input'  => 'datetime',
-                    'widget' => 'single_text',
-                    'required' => true,
-                    'data' => new DateTime()
-                ]
-            )
+            ;
+        if ($this->getSubject()->getId() === null) {
+            $form
+                ->add(
+                    'date',
+                    DateType::class,
+                    [
+                        'label' => 'Data',
+                        'widget' => 'single_text',
+                        'required' => true,
+                        'data' => new DateTime()
+                    ]
+                )
+                ->add(
+                    'start',
+                    TimeType::class,
+                    [
+                        'label' => 'Inici',
+                        'input'  => 'datetime',
+                        'widget' => 'single_text',
+                        'required' => true,
+                        'data' => new DateTime()
+                    ]
+                )
+            ;
+        } else {
+            $form
+                ->add(
+                    'date',
+                    DateType::class,
+                    [
+                        'label' => 'Data',
+                        'widget' => 'single_text',
+                        'required' => true,
+                    ]
+                )
+                ->add(
+                    'start',
+                    TimeType::class,
+                    [
+                        'label' => 'Inici',
+                        'input'  => 'datetime',
+                        'widget' => 'single_text',
+                        'required' => true,
+                    ]
+                )
+            ;
+        }
+        $form
             ->add(
                 'finish',
                 TimeType::class,
