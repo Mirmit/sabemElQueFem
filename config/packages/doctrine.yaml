@@ -20,6 +20,7 @@ doctrine:
                 date: DoctrineExtensions\Query\Mysql\Date
                 yearweek: DoctrineExtensions\Query\Mysql\YearWeek
                 month: DoctrineExtensions\Query\Mysql\Month
+                year: DoctrineExtensions\Query\Mysql\Year
 when@test:
     doctrine:
         dbal:

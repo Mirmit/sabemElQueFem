@@ -22,6 +22,45 @@
     <div>
       <div id="tableInvoceableHoursPerProject">
         <h3>Hores per projecte</h3>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Mes</th>
+            <th scope="col">{{ "now"|date_modify("-32 days")|date("F") }}</th>
+            <th scope="col">{{ "now"|date("F") }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for project, projectHours in monthlyProject %}
+          <tr>
+            <th scope="row">{{ project }}</th>
+            {% if projectHours.previous is defined %}
+              <td>{{ projectHours.previous }}</td>
+            {% else %}
+              <td> - </td>
+            {% endif %}
+            {% if projectHours.current is defined %}
+              <td>{{ projectHours.current }}</td>
+            {% else %}
+              <td> - </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+          <tr>
+            <th scope="row">Total</th>
+            {% if totalProject.previous is defined %}
+              <td>{{ totalProject.previous }}</td>
+            {% else %}
+              <td> - </td>
+            {% endif %}
+            {% if totalProject.current is defined %}
+              <td>{{ totalProject.current }}</td>
+            {% else %}
+              <td> - </td>
+            {% endif %}
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <script type="module">

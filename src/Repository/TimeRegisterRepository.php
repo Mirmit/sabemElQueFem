@@ -6,6 +6,7 @@ use App\Entity\TimeRegister;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use DoctrineExtensions\Query\Mysql\Date;
 
 /**
  * @method TimeRegister|null find($id, $lockMode = null, $lockVersion = null)
@@ -75,10 +76,13 @@ class TimeRegisterRepository extends ServiceEntityRepository
     public function getTotalHoursGroupedByMonthAndProject(): array
     {
         return $this->createQueryBuilder('t')
-            ->select('MONTH(t.date) as month, p.name, SUM(t.totalHours) as totalHours')
+            ->select('MONTH(t.date) as month, YEAR(t.date) as year, p.name as project, SUM(t.totalHours) as totalHours')
             ->join('t.project', 'p')
             ->andWhere('t.invoiceable = true')
+            ->andWhere('MONTH(t.date) >= :month')
+            ->setParameter('month', date('m') - 1)
             ->groupBy('month')
+            ->addGroupBy('year')
             ->addGroupBy('p.name')
             ->orderBy('month', 'ASC')
             ->getQuery()
