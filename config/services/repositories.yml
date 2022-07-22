@@ -9,4 +9,4 @@ services:
     class: App\Repository\TimeRegisterRepository
     factory: [ '@doctrine', getRepository ]
     arguments:
-      - App:TimeRegister
+      - App\Entity\TimeRegister
