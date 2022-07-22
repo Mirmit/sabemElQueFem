@@ -72,6 +72,19 @@ class TimeRegisterRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getTotalHoursGroupedByMonthAndProject(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('MONTH(t.date) as month, p.name, SUM(t.totalHours) as totalHours')
+            ->join('t.project', 'p')
+            ->andWhere('t.invoiceable = true')
+            ->groupBy('month')
+            ->addGroupBy('p.name')
+            ->orderBy('month', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
     /*
     public function findOneBySomeField($value): ?TimeRegister

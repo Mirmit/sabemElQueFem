@@ -42,6 +42,7 @@ class VisualizationBlockService extends AbstractBlockService
         $user2 = $this->userRepository->find(5);
         $monthlyInvoiceableHours1 = $this->timeRegisterRepository->getTotalHoursInvoiceableGroupedByMonthAndUser($user1);
         $monthlyInvoiceableHours2 = $this->timeRegisterRepository->getTotalHoursInvoiceableGroupedByMonthAndUser($user2);
+        $monthlyInvoiceableProject = $this->timeRegisterRepository->getTotalHoursGroupedByMonthAndProject();
         $backgroundColor = 'bg-green';
         $content = '<h3><i class="fa fa-check-circle-o" aria-hidden="true"></i></h3><p>Aquí hi anirà un gràfic de barres</p>';
 
@@ -57,6 +58,7 @@ class VisualizationBlockService extends AbstractBlockService
                 'weeklyData' => $weeklyData,
                 'monthlyUser1' => $monthlyInvoiceableHours1,
                 'monthlyUser2' => $monthlyInvoiceableHours2,
+                'monthlyProject' => $monthlyInvoiceableProject,
             ),
             $response
         );
